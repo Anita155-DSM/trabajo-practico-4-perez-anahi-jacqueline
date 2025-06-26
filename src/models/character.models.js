@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../config/database";
+import sequelize from "../config/database.js";
 
 const characters = sequelize.define('characters',{
     name:{
@@ -20,3 +20,4 @@ const characters = sequelize.define('characters',{
     }
 }
 )
+export default characters
