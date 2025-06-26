@@ -1,23 +1,26 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
 
-const characters = sequelize.define('characters',{
-    name:{
+const characters = sequelize.define('characters', {
+    name: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true 
     },
-    ki:{
+    ki: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    race:{
+    race: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    gender:{
+    gender: {
         type: DataTypes.STRING,
         allowNull: false
     }
-}
-)
-export default characters
+}, {
+    createdAt: false,
+    updatedAt: false
+});
+export default characters;

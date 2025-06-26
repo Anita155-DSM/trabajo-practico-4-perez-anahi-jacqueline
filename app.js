@@ -1,26 +1,24 @@
 import express from "express";
 import sequelize from "./src/config/database.js";
-import dotenv from 'dotenv';
-import router from "./src/routes/character.routes.js";
+import dotenv from "dotenv";
+import characterRoutes from './src/routes/character.routes.js';
 
-dotenv.config ();
+dotenv.config(); // Carga las variables de entorno al inicio
 
 const app = express();
-const PORT = process.env.BD_PORT || 4000;
-//aca probamos conexion 
-sequelize.sync()
-.then (() => {
-    console.log ("Base de datos conectada con éxito")
-})
-.catch ((err) => {
-    console.log ("Error en cuanto a la conexion de la BD")
-})
-app.listen (PORT, () => {
-    console.log ("el servidor esta corriendo en: http://localhost"+ PORT)
-})
-
 app.use(express.json());
-app.use("/characters", characterRoutes);
-app.listen(3000, () => {
-  console.log("Servidor corriendo en puerto 3000");
+const PORT = process.env.BD_PORT || 4000;
+sequelize.sync()
+    .then(() => {
+        console.log("Base de datos conectada correctamente");
+        app.listen(PORT, () => {
+            console.log(`servidor corriendo en: http://localhost:${PORT}`);
+        });
+    })
+    .catch((err) => {
+        console.error("Error al conectar la base de datos:", err);
+    });
+app.get('/', (req, res) => {
+    res.send('Api funcionando');
 });
+app.use("/api/characters", characterRoutes);
