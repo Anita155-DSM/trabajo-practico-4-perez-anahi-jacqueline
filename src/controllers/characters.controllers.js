@@ -1,6 +1,6 @@
 import characters from "../models/character.models";
 
-const createCharacter = async (req, res) => {
+export const createCharacter = async (req, res) => {
     const { name, race, gender, ki } = req.body;
     if (!name || !race || !ki || !gender){
         return res.status(400).json ({ message: "faltan datos obligatorios"})
@@ -24,15 +24,15 @@ const createCharacter = async (req, res) => {
         res.status(500).json ({message: "error al crear personaje"})
     }
 };
-const getAllCharacters = async (req, res) => {
+export const getAllCharacters = async (req, res) => {
     try{
         const character = await characters.findAll();
         res.status(200).json(character)
     }catch(error){
-        res.status(500).json ({mensage: "no se encontraron personajes"})
+        res.status(500).json ({mensage: "error:no se encontraron personajes"})
     }
 }
-const getCharacterID = async (req, res)=> {
+export const getCharacterID = async (req, res)=> {
     try{
         const character = await characters.findByPk(id)
         res.status(200).json (characters)
@@ -40,20 +40,20 @@ const getCharacterID = async (req, res)=> {
         res.status(500).json ({message:"no se encontró ese personaje por su ID"})
     }
 }
-const characterUpdate = async (req, res)=> {
+export const characterUpdate = async (req, res)=> {
     const {id} = req.params;
     const {name, race, gender, ki} = req.body;
 
     try{
         const character = await characters.findByPk(id);
         if (!character){
-            return res.status(404).json({message: "No encontrado :("})
+        return res.status(404).json({message: "No encontrado :("})
         }
         if (!name || !race || !gender || !ki){
-            return res.status(500).json({message:"faltan datos obligatorios"})
+        return res.status(500).json({message:"faltan datos obligatorios"})
         }
         if (!Number.isInteger(ki)) {
-            res.status(500).json({message:"no es un numero entero, no es válido"})
+        return res.status(500).json({message:"no es un numero entero, no es válido"})
         }
         if (gender !== 'Male' && gender !== 'Female') {
         return res.status(400).json({ message: 'El género debe ser "Male" o "Female"' });
@@ -63,9 +63,22 @@ const characterUpdate = async (req, res)=> {
         return res.status(400).json({ message: 'Ya existe un personaje con ese nombre' });
         }
         await character.update({ name, ki, race, gender });
-        res.status(400).json(character);
+        return es.status(400).json(character);
         }catch(error) {
-        res.status(500).json({ message: 'Error al actualizar el personaje' });
+        return res.status(500).json({ message: 'Error al actualizar el personaje' });
         }
     };
- 
+export const characterDelete = async (req, res) => {
+    const {id} = req.params;
+    try {
+    const character = await characters.findByPk(id);
+    if (!character) {
+      return res.status(404).json({ message: 'Personaje no encontrado' });
+    }
+
+    await characters.destroy();
+    res.status(200).json({ message: 'Personaje eliminado correctamente' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al eliminar el personaje' });
+  }
+}
